@@ -38,7 +38,7 @@ export default defineUserConfig({
         link: '/',
       },
       {
-        text: '前端官方文档',
+        text: '前端文档',
         children: [
           {
             text: 'Vite',
@@ -106,7 +106,7 @@ export default defineUserConfig({
         ],
       },
       {
-        text: 'other',
+        text: '其它',
         children: [
           {
             text: 'typora',

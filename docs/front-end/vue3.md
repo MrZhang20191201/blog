@@ -4,6 +4,9 @@
 > - npm：8.5.0
 > - vite ： 4.4.5
 > - vue：3.3.4
+> - vuex：4.1.0
+> - @types/node：20.5.9
+> - typescript ：5.0.2
 
 ## 项目搭建
 
@@ -211,13 +214,75 @@ import HelloWorld from '@/components/HelloWorld.vue'
 </script>
 ```
 
+### 集成  `Vuex`
+
+> 概念介绍
+>
+> - `State`：单一状态树，作为数据源使用，最好通过计算属性读取状态，便于更新后直接可以更新相关联的`dom`
+> - `Getter`：当源数据不满足时，可以返回处理后的数据，不可接收参数，但可以通过一个函数来支持参数传递，便于条件查询
+> - `Mutation`：事件，用于修改数据源，相较于 `Getter` 可接受参数，但无返回值，且必须是同步操作
+> - `Action `：事件，用于修改数据源，相较于 `Mutation` ，只能通过调用 `Mutation` 来修改数据源，但是可以支持同步和异步操作
+> - `Module`：模块，解决数据源过多造成代码臃肿问题，可以通过纵向分割为多个模块，每个模块都含有 `State` `Getter` `Mutation` `Action ` 甚至是嵌套子模块，并且可通过设置命名空间来防止数据名一样的问题，项目中推荐使用模块化、设置命名空间的方式
+
+- 安装
+
+```sh
+npm i vuex
+```
+
+- 解决 无法找到模块“vuex”的声明文件
+
+  > tsconfig.json/compilerOptions/paths 下添加如下配置
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "vuex": ["node_modules/vuex/types"] 
+    }
+  }
+}
+```
+
+- 项目结构
+
+  > 对于大型应用，最好把 Vuex 相关代码分割到模块中，下面是项目结构示例：
+
+```sh
+├── src
+    └── store
+        ├── index.ts          # 组装模块并导出 store 的地方
+        ├── actions.ts        # 根级别的 action
+        ├── mutations.ts      # 根级别的 mutation
+        └── modules
+            ├── login.ts       # 登入模块
+```
+
+- `index.ts`
+
+```tsx
+import { createStore, createLogger } from 'vuex'
+
+const debug = process.env.NODE_ENV !== 'production'
+const options = {
+  modules: {},
+  strict: debug, // 开启严格模式，发布环境下关闭
+  plugins: debug ? [
+    createLogger() // 开启控制台日志模式，发布环境下关闭
+  ] : []
+}
+
+export default createStore(options);
+```
+
+
+
 ### 集成  `VueRouter`
 
 ### 集成 ` Axios`
 
 ### 集成  `MockJs`
-
-### 集成  `Vuex`
 
 ### 权限控制
 
