@@ -13,13 +13,16 @@
 
 > - `my-vue-app`：项目的名称，小写多个单词用`-`分割
 > - `template`“：指定vite创建的项目模板，这里指定创建vue
+> - `vue-ts` ：默认安装 `typescript` 
 
 ```powershell
 # npm 6.x
 npm create vite@latest my-vue-app --template vue
+npm create vite@latest my-vue-app --template vue-ts
 
 # npm 7+, extra double-dash is needed:
 npm create vite@latest my-vue-app -- --template vue
+npm create vite@latest my-vue-app -- --template vue-ts
 ```
 
 ![image-20230830161436887](http://file.zjay.top//blog/images/202308301614738.png)
@@ -160,15 +163,44 @@ export default defineConfig({
 - `vite.config.js`里面添加如下信息：
 
 ```tsx
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { resolve } from 'path';
+
 export default defineConfig({
   plugins: [vue()],
+  envPrefix: "APP",
   resolve: {
     alias: {
-      '@': resolve(__dirname, '.', 'src'),
-      '@/*': resolve(__dirname, '.', 'src/*'),
+      "@": resolve(__dirname, "./src"),
+      '@/*': resolve(__dirname, '.', 'src/*')
     }
   }
 })
+
+```
+
+- 解决 找不到名称“ _ _ dirname”错误
+
+```powershell
+npm i -D @types/node
+```
+
+- 解决`vscode` 找不到模块“@/components/HelloWorld.vue”或其相应的类型声明
+
+  > `tsconfig.json` 文件 `compilerOptions` 选项中新增 如下配置
+
+```tsx
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@": ["src/*"],
+      "@/*": ["src/*"]
+    }
+  }
+}
+
 ```
 
 - 使用
@@ -179,15 +211,34 @@ import HelloWorld from '@/components/HelloWorld.vue'
 </script>
 ```
 
-### 集成 TypeScript
+### 集成  `VueRouter`
 
-### 集成 VueRouter
+### 集成 ` Axios`
 
-### 集成 Axios
+### 集成  `MockJs`
 
-### 集成 MockJs
+### 集成  `Vuex`
 
-### 集成 Vuex
+### 权限控制
+
+- 自定义授权指令
+
+  > 通过自定义授权指令方式，根据指令值判断当前用户是否有权限操作指定元素，达到权限控制，具体应用 例如：按钮权限、区域权限
+
+```vue
+<script setup>
+const auths = ['save']; // 当前用户具备的权限
+const vAuth = (el, binding) => {
+  if (auths.indexOf(binding.value) == -1) el.remove()
+}
+</script>
+<template>
+  <div>
+    <button v-auth="'save'">保存</button>
+    <button v-auth="'delete'">删除</button>
+  </div>
+</template>
+```
 
 ## 内置指令
 
@@ -521,9 +572,7 @@ app.directive('focus', {}) // v-focus
 const vDemo = {
   // 在绑定元素的 attribute 前
   // 或事件监听器应用前调用
-  created(el, binding, vnode, prevVnode) {
-    // 下面会介绍各个参数的细节
-  },
+  created(el, binding, vnode, prevVnode) {},
   // 在元素被插入到 DOM 前调用
   beforeMount(el, binding, vnode, prevVnode) {},
   // 在绑定元素的父组件

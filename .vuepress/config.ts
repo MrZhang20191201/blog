@@ -38,48 +38,79 @@ export default defineUserConfig({
         link: '/',
       },
       {
-        text: '官方文档',
+        text: '前端官方文档',
         children: [
+          {
+            text: 'Vite',
+            link: 'https://cn.vitejs.dev'
+          },
           {
             text: 'Vue3',
             link: 'https://cn.vuejs.org/guide/introduction.html'
           },
           {
+            text: 'TypeScript',
+            link: 'https://www.tslang.cn'
+          },
+          {
+            text: 'Vuex',
+            link: 'https://vuex.vuejs.org/zh/guide'
+          },
+          {
             text: 'Vue Router',
-            link: 'https://router.vuejs.org'
+            link: 'https://router.vuejs.org/zh'
+          },
+          {
+            text: 'Axios',
+            link: 'https://www.axios-http.cn/docs/intro'
+          },
+          {
+            text: 'MOckJs',
+            link: 'http://mockjs.com'
           },
           {
             text: 'Element Plus',
             link: 'https://element-plus.org'
-          },
-          {
-            text: 'Vite',
-            link: 'https://cn.vitejs.dev'
           }
         ],
       },
       {
-        text: '文档',
+        text: '前端',
         children: [
           {
             text: 'vue3',
-            link: '/docs/vue3.md'
+            link: '/docs/front-end/vue3.md'
           },
           {
             text: 'nodejs',
-            link: '/docs/nodejs.md'
-          },
+            link: '/docs/front-end/nodejs.md'
+          }
+        ],
+      },
+      {
+        text: '数据库',
+        children: [
           {
             text: 'mysql',
-            link: '/docs/mysql.md'
-          },
+            link: '/docs/db/mysql.md'
+          }
+        ],
+      },
+      {
+        text: 'csharp',
+        children: [
           {
             text: 'ocelot',
-            link: '/docs/ocelot.md'
-          },
+            link: '/docs/csharp/ocelot.md'
+          }
+        ],
+      },
+      {
+        text: 'other',
+        children: [
           {
             text: 'typora',
-            link: '/docs/typora.md'
+            link: '/docs/other/typora.md'
           }
         ],
       },
