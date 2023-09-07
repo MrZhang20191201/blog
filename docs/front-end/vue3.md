@@ -360,7 +360,7 @@ HelloWorld.vue:10 action login/setData @ 16:47:06.698
 login.ts:27 mutation login/setData @ 16:47:08.705
 ```
 
-- 解决刷新浏览器后数据丢失问题
+- 解决刷新浏览器后数据丢失问题 
 
   > 问题：登入后存储当前用户信息，但是刷新后内存清空会导致数据丢失
   >
