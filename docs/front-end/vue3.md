@@ -344,6 +344,22 @@ store.dispatch('login/setData') // 调用 actions 的 setData 方法
 </template>
 ```
 
+- 页面输出
+
+```tex
+{ "userId": 1, "userName": "张三" }
+张三
+张三|传递参数哦
+```
+
+- 页面日志
+
+```tex
+HelloWorld.vue:9 mutation login/setData @ 16:47:06.696
+HelloWorld.vue:10 action login/setData @ 16:47:06.698
+login.ts:27 mutation login/setData @ 16:47:08.705
+```
+
 - 解决刷新浏览器后数据丢失问题
 
   > 问题：登入后存储当前用户信息，但是刷新后内存清空会导致数据丢失
@@ -368,9 +384,8 @@ window.addEventListener('beforeunload', () => {
   localStorage.setItem('store', JSON.stringify(store.state));
 })
 </script>
+<template></template>
 ```
-
-
 
 ### 集成  `VueRouter`
 
