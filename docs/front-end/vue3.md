@@ -259,21 +259,115 @@ npm i vuex
             ├── login.ts       # 登入模块
 ```
 
+- `login.ts`
+
+```tsx
+export default {
+  namespaced: true, // 开启命名空间
+  state: {
+    data: {
+      userId: 0,
+      userName: ''
+    }
+  },
+  getters: {
+    getUserName(state: any) {
+      return state.data.userName
+    },
+    getUserNameByParam(state: any) {
+      return (param:any) => {
+        return `${state.data.userName}|${param}`
+      }
+    }
+  },
+  mutations: {
+    setData(state: any, params: any) {
+      state.data = params
+    }
+  },
+  actions: {
+    setData(context: any) {
+      setTimeout(() => { // 模拟异步
+        context.commit('setData', { // 调用 mutations 中的 setData 方法
+          userId: 1,
+          userName: '张三'
+        })
+      }, 2000);
+    }
+  }
+}
+```
+
 - `index.ts`
 
 ```tsx
 import { createStore, createLogger } from 'vuex'
+import Login from './modules/login'
 
 const debug = process.env.NODE_ENV !== 'production'
+
 const options = {
-  modules: {},
-  strict: debug, // 开启严格模式，发布环境下关闭
+  modules: {
+    login:Login // 注册模块，命名空间是 login
+  },
+  strict: debug, // 在严格模式下，无论何时发生了状态变更且不是由 mutation 函数引起的，将会抛出错误。
+    			// 这能保证所有的状态变更都能被调试工具跟踪到，建议发布环境下关闭
   plugins: debug ? [
-    createLogger() // 开启控制台日志模式，发布环境下关闭
+    createLogger() // 开启控制台日志模式，建议环境下关闭
   ] : []
 }
 
 export default createStore(options);
+```
+
+- 使用（组合式API）
+
+```vue
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
+const login = computed(() => store.state.login.data) // 获取 state 中的数据，store.state.命名空间.属性名
+const userName = computed(() => store.getters['login/getUserName']) // 获取 state 中的数据，store.state.命名空间.属性名
+const userName2 = computed(() => store.getters['login/getUserNameByParam']('传递参数哦')) // 传递参数
+store.commit('login/setData', { userId: 1, userName: '李四' }) // 调用 mutations 的 setData 方法
+store.dispatch('login/setData') // 调用 actions 的 setData 方法
+</script>
+
+<template>
+  <div>
+    <p>{{ login }}</p>
+    <p>{{ userName }}</p>
+    <p>{{ userName2 }}</p>
+  </div>
+</template>
+```
+
+- 解决刷新浏览器后数据丢失问题
+
+  > 问题：登入后存储当前用户信息，但是刷新后内存清空会导致数据丢失
+  >
+  > 解决：刷新前可以把信息存储到本地，刷新后获取本地信息即可
+
+```vue
+// App.vue
+<script setup lang="ts">
+import { useStore } from 'vuex'
+
+const store = useStore();
+
+// 获取本地信息
+if (localStorage.getItem('store')) {
+  store.replaceState(Object.assign({}, store.state, JSON.parse(localStorage.getItem('store')!)));
+}
+
+// 监听浏览器刷新事件,信息存储到本地
+window.addEventListener('beforeunload', () => {
+  store.commit('fullLoading/show');
+  localStorage.setItem('store', JSON.stringify(store.state));
+})
+</script>
 ```
 
 
