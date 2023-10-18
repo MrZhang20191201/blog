@@ -256,7 +256,7 @@ npm i vuex
         ├── actions.ts        # 根级别的 action
         ├── mutations.ts      # 根级别的 mutation
         └── modules
-            ├── login.ts       # 登入模块
+            └── login.ts       # 登入模块
 ```
 
 - `login.ts`
@@ -393,6 +393,8 @@ window.addEventListener('beforeunload', () => {
 
 ### 集成  `MockJs`
 
+### 集成 `gsap`
+
 ### 权限控制
 
 - 自定义授权指令
@@ -413,6 +415,104 @@ const vAuth = (el, binding) => {
   </div>
 </template>
 ```
+
+## Ref
+
+> 
+>
+> 注意，在模板中使用 ref 时，我们**不**需要附加 `.value`。为了方便起见，当在模板中使用时，ref 会自动解包
+>
+> 在模板渲染上下文中，只有顶级的 ref 属性才会被解包
+
+### 响应式对象
+
+> - `ref()` 接收参数，并将其包裹在一个带有 `.value` 属性的 ref 对象中
+> - 在 `<script setup>` 中可以通过 `.value` 方式访问
+> - 方便起见，当在模板中使用时，ref 会自动解包，只有顶级的 ref 属性才会被解包
+
+#### 基础使用
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+const count = ref(0)
+
+console.log(count) // { value: 0 }
+console.log(count.value) // 0
+
+count.value++
+console.log(count.value) // 1
+</script>
+<template>
+	<div>{{ count }}</div>
+</template>
+```
+
+#### 模板中解包
+
+在下面的例子中，`count` 和 `object` 是顶级属性，但 `object.id` 不是：
+
+```tsx
+const count = ref(0) // 模板中 `{{ count + 1 }}` 这个表达式按预期工作
+const object = { id: ref(1) } // 但这个不会 `{{ object.id + 1 }}`
+const { id } = object  // 为了解决这个问题，我们可以将 id 解构为一个顶级属性 `{{ id + 1 }}` 即可按预期工作
+```
+
+### 获取组件对象
+
+```vue
+<script setup lang="ts">
+import componentFather from '@/components/componentFather/Index.vue';
+const componentFatherRef = ref();
+</script>
+<template>
+	<component-father ref="outsideComponentRef">
+</template>
+```
+
+### 获取DOM元素
+
+## 计算属性
+
+> - 减少模板中逻辑代码
+> - 缓存计算结果，一个计算属性仅会在其响应式依赖更新时才重新计算，提高性能
+> - 计算属性默认是只读的，“可写”的属性，可以通过同时提供 getter 和 setter 来创建（不推荐）
+
+### 基础使用
+
+```vue
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+
+const count = ref(0);
+const result = computed(() => count.value++);
+</script>
+<template>
+	<div>{{ count }}</div>
+</template>
+```
+
+### 可写计算属性
+
+```vue
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+
+const firstName = ref('John')
+const lastName = ref('Doe')
+
+const fullName = computed({
+  get() {
+    return firstName.value + ' ' + lastName.value
+  },
+  set(newValue) {
+    [firstName.value, lastName.value] = newValue.split(' ')
+  }
+})
+</script>
+```
+
+
 
 ## 内置指令
 
