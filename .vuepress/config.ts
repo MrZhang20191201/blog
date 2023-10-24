@@ -38,7 +38,7 @@ export default defineUserConfig({
         link: '/',
       },
       {
-        text: '前端文档',
+        text: '官方文档',
         children: [
           {
             text: 'Vite',
@@ -71,6 +71,10 @@ export default defineUserConfig({
           {
             text: 'Element Plus',
             link: 'https://element-plus.org'
+          },
+          {
+            text: 'Linux命令查询手册',
+            link: 'https://www.linuxcool.com/'
           }
         ],
       },
@@ -102,6 +106,15 @@ export default defineUserConfig({
           {
             text: 'ocelot',
             link: '/docs/csharp/ocelot.md'
+          }
+        ],
+      },
+      {
+        text: '操作系统',
+        children: [
+          {
+            text: 'linux',
+            link: '/docs/os/linux.md'
           }
         ],
       },
