@@ -250,9 +250,49 @@ ip addr
 
 > 查询手册：https://www.linuxcool.com/
 
-- rpm
-- systemctl 
-- sudo
+### 文件和目录操作
+
+- `ls`：列出文件和目录。
+- `cd`：切换当前工作目录。
+- `pwd`：显示当前工作目录路径。
+- `mkdir`：创建新目录。
+- `rm`：删除文件或目录。
+- `cp`：复制文件和目录。
+- `mv`：移动或重命名文件和目录。
+
+### 文本处理
+
+- `cat`：显示文件内容。
+- `head`：显示文件开头部分。
+- `tail`：显示文件末尾部分。
+- `grep`：在文件中搜索匹配的文本。
+- `sed`：在文本中执行替换操作。
+- `awk`：处理和分析文本数据。
+
+### 系统信息和管理
+
+- `uname`：显示系统信息。
+- `df`：显示磁盘空间使用情况。
+- `top`：显示系统资源使用情况和活动进程。
+- `ps`：显示当前运行的进程信息。
+- `kill`：终止进程。
+- `shutdown`：关机或重启计算机。
+
+### 网络和连接
+
+- `ping`：测试网络连通性。
+- `ifconfig`：查看和配置网络接口。
+- `ssh`：通过 SSH 连接到远程主机。
+- `wget`：下载文件。
+- `curl`：通过 URL 进行数据传输。
+
+### 权限和用户管理
+
+- `chmod`：修改文件和目录权限。
+- `chown`：修改文件和目录的所有者。
+- `chgrp`：修改文件和目录的所属组。
+- `useradd`：创建新用户。
+- `passwd`：更改用户密码。
 
 ## VI/VIM 编辑器
 
@@ -402,13 +442,61 @@ ip addr
 - 退出可视块模式：
   - 按下 `Esc` 键：退出可视块模式并返回到普通模式。
 
-## yum 命令
+## YUM 命令
 
-> https://www.runoob.com/linux/linux-yum.html
+> 参考文献
 >
-> https://blog.csdn.net/qq_43475285/article/details/129479198
+> - 学习文档：https://www.runoob.com/linux/linux-yum.html
+> - 软件源库：https://blog.csdn.net/qq_43475285/article/details/129479198
 >
-> https://blog.csdn.net/chuanxincui/article/details/82850538
+> - yum安装的软件为什么不用配置环境变量即可执行命令：https://blog.csdn.net/chuanxincui/article/details/82850538
+> - 更换软件源库：https://blog.csdn.net/m0_49605975/article/details/120039048
+
+### 介绍说明
+
+- yum（ Yellow dog Updater, Modified）是一个在 Fedora 和 RedHat 以及 SUSE 中的 Shell 前端软件包管理器。
+- 基于 RPM 包管理，能够从指定的服务器自动下载 RPM 包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软件包，无须繁琐地一次次下载、安装。
+- yum 提供了查找、安装、删除某一个、一组甚至全部软件包的命令，而且命令简洁而又好记。
+
+### 语法说明
+
+> - `options`：可选，选项包括-h（帮助），-y（当安装过程提示选择全部为 "yes"），-q（不显示安装的过程）等等。
+> - `command`：要进行的操作。
+> - `package`：安装的包名。
+
+```bash
+yum [options] [command] [package ...]
+```
+
+### 常用命令
+
+- `yum update`：更新系统中所有已安装的软件包到最新版本。
+- `yum install package_name`：安装指定软件包，例如 `yum install nginx`。
+- `yum remove package_name`：卸载指定软件包，例如 `yum remove nginx`。
+- `yum search keyword`：在可用的软件包列表中搜索关键字，例如 `yum search python`。
+- `yum info package_name`：显示特定软件包的详细信息，如版本、大小等。
+- `yum list`：列出所有已安装的软件包。
+- `yum list available`：列出可用的软件包。
+- `yum list installed`：列出已安装的软件包。
+- `yum upgrade package_name`：升级指定软件包到最新版本。
+- `yum clean all`：清理 YUM 缓存，删除下载的软件包和元数据。
+- `yum repolist`：列出当前配置的软件源库。
+- `yum makecache`：生成 YUM 软件包管理器的缓存，下载并保存每个软件包的元数据信息到本地缓存中
+
+### 软件源库设置
+
+> CentOS默认的yum源有时候不是国内镜像，导致yum在线安装及更新速度不是很理想，这时候需要将yum源设置为国内镜像站点（网易or阿里云等）
+
+- 查看当前软件源库（如果不是国内那么建议更换，因为我这边是阿里的镜像，里面已经设置了）
+
+  ```
+  # 查看使用的软件源库
+  yum makecache
+  # 查看所有软件源库
+  yum makecache all
+  ```
+
+  ![image-20231027173504263](http://file.zjay.top/blog/images/202310271735715.png)
 
 
 
