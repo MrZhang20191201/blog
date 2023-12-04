@@ -246,10 +246,6 @@ ip addr
 
 - **/run**：是一个临时文件系统，存储系统启动以来的信息。当系统重启时，这个目录下的文件应该被删掉或清除。如果你的系统上有 /var/run 目录，应该让它指向 run。
 
-### 内置服务
-
-- 防火墙服务 `firewalld`
-
 ## 操作命令
 
 > 查询手册：https://www.linuxcool.com/
@@ -286,6 +282,7 @@ systemctl [OPTIONS] COMMAND [UNIT]
 - `systemctl is-enabled <service-name>`：查看服务是否自启动
 - `systemctl list-units <service-name>`：查看所有服务
 - `systemctl list-unit-files <service-name>`：列出系统上所有的服务单元（包括已启用和已禁用的）
+- `systemctl daemon-reload`：重新加载配置（服务文件修改后需要执行次命令）
 
 ### 管理软件包 `rpm`
 
@@ -355,6 +352,36 @@ tar [选项] [操作] [文件/目录]
 - `tar -tvf archive.tar`：列出 tar 归档文件中的内容
 
 ### 防火墙 `firewall-cmd`
+
+> 用于配置和管理防火墙规则的命令行工具，它是在使用 firewalld 防火墙服务的 Linux 系统上使用的
+
+#### 语法说明
+
+> 其中，选项用于指定不同的功能或设置，操作用于指定要执行的操作
+
+```bash
+firewall-cmd [选项] [操作]
+```
+
+#### 可选参数
+
+- `--zone=ZONE`：指定要配置的区域（firewalld 中的区域，如 public、internal、dmz 等）
+- `--add-service=SERVICE`：允许通过指定的服务
+- `--remove-service=SERVICE`：禁止通过指定的服务
+- `--add-port=PORT[/PROTOCOL]`：允许通过指定的端口和协议
+- `--remove-port=PORT[/PROTOCOL]`：禁止通过指定的端口和协议
+- `--list-all`：显示所有当前配置的防火墙规则
+- `--permanent`：将修改持久化到配置文件中，没有此参数重启后失效
+- `--reload`：重新加载防火墙配置，使更改生效
+
+#### 使用案例
+
+- `firewall-cmd --zone=public --add-port=8080/tcp --permanent`: 永久开放指定端口
+- `firewall-cmd --reload`： 重新载入
+- `firewall-cmd --zone=public --add-service=http`：允许通过指定的服务（例如，HTTP）
+- `firewall-cmd --zone=public --remove-service=ftp`：禁止通过指定的服务（例如，FTP）
+- `firewall-cmd --zone=public --remove-port=123/udp`：禁止通过指定的端口和协议（例如，UDP 123）
+- `firewall-cmd --list-all`：显示所有当前配置的防火墙规则
 
 ## VI/VIM 编辑器
 
@@ -617,36 +644,80 @@ wget -c https://example.com/file.txt #断点续传下载
 yum install wget
 ```
 
-## 服务自启动
+## 服务文件（CentOS7）
 
-> `systemd` 可用于创建服务文件以启动和监视基础 Web 应用。 `systemd` 是一个初始系统，可以提供启动、停止和管理进程的许多强大的功能
+> - 服务文件是一种用于定义和管理系统服务的配置文件。它们通常位于 `/etc/systemd/system/` 目录下，使用 Systemd 初始化系统进行管理。
 >
-> - https://learn.microsoft.com/zh-cn/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-7.0&tabs=linux-ubuntu
-> - https://www.cnblogs.com/cheng8/p/16079449.html
+>   - `/usr/lib/systemd/`：存储已下载应用程序的服务文件
+>
+>   - `/etc/systemd/system/`：存储由系统管理员创建的服务文件
+>
+> - 一般需要手动启动的服务，我们可以配置为守护程序，可以根据服务器启动后自行启动，例如 `.net core` 应用程序
+>
+> - 服务文件提供了对系统服务进行配置和管理的灵活性和控制能力。通过编辑服务文件，可以定义服务的行为、依赖关系和执行方式。一旦修改并保存了服务文件，可以使用 `systemctl` 命令来加载、启动、停止、重启或查看服务的状态。
+>
+> - 具体的服务文件格式和字段可能会根据不同的 `Linux` 发行版和服务类型而有所不同。因此，在编辑或创建服务文件时，建议参考相关文档和手册以确保正确配置服务。
 
-### 创建服务文件
+### 参数说明
+
+> 服务文件由三个主要部分组成
+>
+> - `Unit`：这个部分包含了关于服务的描述信息。`Description` 字段用于提供服务的简短描述，`Documentation` 字段可包含有关该服务的更多文档资料，`After` 和 `Requires` 字段指定了其他服务的依赖关系。
+> - `Service`：这个部分定义了服务的执行方式和行为。`Type` 字段指定服务运行的类型（如 `simple`、`forking`、`oneshot `等），`ExecStart` 字段指定了服务启动时要执行的命令或脚本，`WorkingDirectory` 字段指定了服务运行时的工作目录，`User` 和 `Group` 字段指定了服务运行的用户和组，`Restart` 和 `RestartSec` 字段定义了服务在失败时是否重启以及重启的时间间隔。
+> - `Install`：这个部分定义了服务的安装和启动配置。`WantedBy` 字段指定了服务所属的 `target`（目标），用于确定服务在系统启动时是否自动启动。
 
 ```bash
-vi /etc/systemd/system/kestrel-helloapp.service
+[Unit]
+Description=Service Description
+Documentation=URL
+After=dependency.service
+Requires=dependency.service
+
+[Service]
+Type=simple
+ExecStart=/path/to/executable
+WorkingDirectory=/path/to/working/directory
+User=username
+Group=groupname
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=default.target
+```
+
+### 使用案例
+
+#### 创建服务文件
+
+```bash
+vi /etc/systemd/system/base.service
 ```
 
 以下示例是应用的一个 `.ini` 服务文件：
 
+> - `WorkingDirectory` 是发布应用程序的目录。
+> - `ExecStart` 是启动应用程序的实际命令。
+> - `Restart=always` 是自言自明的。 如果由于某种原因（无论是手动还是由于崩溃）而停止，则始终会启动此过程。
+> - `RestartSec=10` 也是自言自明的。 进程停止后，将在经过 10 秒后启动。
+> - `SyslogIdentifier` 很重要。 它表示系统日志标识符。 有关守护程序的信息记录在此名称下的系统日志中。 还可以使用此标识符查找进程的 PID。
+> - `User` 是管理服务的用户。 它应存在于系统中，并具有相应的应用程序文件所有权。
+> - `Environment` 可以在服务文件中设置任意数量的环境变量。
+
 ```ini
 [Unit]
-Description=Example .NET Web API App running on Linux
+Description=base service running
 
 [Service]
-WorkingDirectory=/var/www/helloapp
-ExecStart=/usr/bin/dotnet /var/www/helloapp/helloapp.dll
+WorkingDirectory=/var/www
+ExecStart=/usr/bin/dotnet /var/www/PM.Base.WebAPI.dll --urls=http://*:5000
 Restart=always
-# Restart service after 10 seconds if the dotnet service crashes:
 RestartSec=10
 KillSignal=SIGINT
-SyslogIdentifier=dotnet-example
+SyslogIdentifier=dotnet-base-service
 User=www-data
-Environment=ASPNETCORE_ENVIRONMENT=Production
-Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ASPNETCORE_ENVIRONMENT=Development
+# Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
 
 [Install]
 WantedBy=multi-user.target
@@ -719,7 +790,8 @@ yum -y install java-1.8.0-openjdk.x86_64
 
 ## .NET 安装
 
-> 官方文档：https://learn.microsoft.com/zh-cn/dotnet/core/install/linux-centos
+> - 官方文档：https://learn.microsoft.com/zh-cn/dotnet/core/install/linux-centos
+> - 自启动官方文档：https://learn.microsoft.com/zh-cn/troubleshoot/developer/webapps/aspnetcore/practice-troubleshoot-linux/2-3-configure-aspnet-core-application-start-automatically
 
 ```bash
 yum install dotnet-sdk-7.0
@@ -758,6 +830,41 @@ firewall-cmd --reload # 重新加载生效
 ```bash
 dotnet <project-name>.dll --urls="http://*:5000"
 ```
+
+### 开机自动运行
+
+> - 每次重启服务器时，都必须手动启动应用程序。 否则，应用程序将正常退出或崩溃。所以我们可以配置为守护程序
+> -  `systemctl` 命令用于管理“服务”或“守护程序”。 守护程序的概念与 Windows 服务的概念类似。 当系统启动时，可以自动重启此类服务。
+
+#### 创建服务文件
+
+> 在 Linux 中，还有具有“.service”扩展名的单元配置文件，用于在进程退出时控制守护程序的行为。 这些文件也称为 *服务文件*、 *单元文件*和 *服务单元文件*。
+>
+> 这些服务文件位于以下目录之一：
+>
+> - */usr/lib/systemd/*：存储已下载应用程序的服务文件
+> - */etc/systemd/system/*：存储由系统管理员创建的服务文件
+
+```bash
+[Unit]
+Description=base service running
+
+[Service]
+WorkingDirectory=/var/www
+ExecStart=dotnet /var/www/PM.Base.WebAPI.dll --urls=http://*:5000
+Restart=always
+RestartSec=10 # 奔溃后多少秒后重启
+KillSignal=SIGINT
+SyslogIdentifier=dotnet-example
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target
+```
+
+
 
 ## Tomcat 安装
 
@@ -839,19 +946,21 @@ systemctl enable tomcat
 
 ### 查看软件包安装信息
 
+> 主要找到 `webapps` 目录，用于部署项目
+
 ```bash
 rpm -ql tomcat
 ```
 
 ### 目录详解
 
-- `bin`：用于存放Tomcat启动或停止等脚本
-- `conf`：用于存放Tomcat相关配置文件
-- `lib`：Tomcat依赖库目录，包含Tomcat服务器运行环境依赖jar包
-- `logs`：Tomcat默认日志存放路径
-- `webapps`：Tomcat默认应用部署目录
-- `work`：WEB应用JSP代码生成和编译临时目录
-- `temp`：Tomcat临时数据目录
+- `bin`：用于存放 `tomcat` 启动或停止等脚本
+- `conf`：用于存放 `tomcat` 相关配置文件
+- `lib`：`tomcat` 依赖库目录，包含 `tomcat` 服务器运行环境依赖jar包
+- `logs`：`tomcat` 默认日志存放路径
+- `webapps`：`tomcat` 默认应用部署目录
+- `work`：`web` 应用 `jsp` 代码生成和编译临时目录
+- `temp`：`tomcat` 临时数据目录
 
 ### Vue 部署
 
