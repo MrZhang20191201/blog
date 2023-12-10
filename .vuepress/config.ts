@@ -124,18 +124,13 @@ export default defineUserConfig({
           {
             text: 'typora',
             link: '/docs/other/typora.md'
-          }
-        ],
-      },
-      {
-        text: '临时',
-        children: [
+          },
           {
             text: 'flutter',
-            link: '/docs/temp/flutter.md'
+            link: '/docs/other/flutter.pdf'
           }
         ],
-      },
+      }
     ],
     sidebar:'auto'
   })

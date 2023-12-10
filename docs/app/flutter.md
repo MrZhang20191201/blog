@@ -10,13 +10,38 @@
 
 ### Android Studio
 
+- 下载安装
+
 > 下载地址：https://developer.android.google.cn/studio?hl=zh-cn
 >
 > 安装后如果没有安装 Android SDK 会提示安装，如果事先安装过需要指定SDK安装地址，注意安装SDK的文件夹名称不要带空格
 
+- 配置 `android sdk`（用户变量）
 
+> 一定要配置，不然无法连接虚拟机（本次安装出现的问题）
+>
+> ANDROID_HOME =  [sdk地址]
 
+- 下载 `flutter sdk` 
 
+  > 下载地址：https://flutter.cn/docs/development/tools/sdk/releases
+
+- 配置 `flutter` 环境变量 `path` 
+
+- 配置镜像（用户变量）
+
+  ```
+  PUB_HOSTED_URL="https://pub.flutter-io.cn"
+  FLUTTER_STORAGE_BASE_URL="https://storage.flutter-io.cn"
+  ```
+
+- 检查安装
+
+  ```powershell
+  flutter doctor
+  ```
+
+  
 
 
 
