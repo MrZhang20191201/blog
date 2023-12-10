@@ -1,3 +1,25 @@
+## 参考文献
+
+> - flutter文档：https://flutter.cn/docs
+> - dart开发语言文档：https://dart.cn/guides
+> - flutter内置组件库文档：https://api.flutter-io.cn/index.html
+> - flutter第三方组件库文档：https://pub.dev/
+> - android studio 开发工具：https://developer.android.google.cn/studio?hl=zh-cn
+
+## 安装配置开发工具
+
+### Android Studio
+
+> 下载地址：https://developer.android.google.cn/studio?hl=zh-cn
+>
+> 安装后如果没有安装 Android SDK 会提示安装，如果事先安装过需要指定SDK安装地址，注意安装SDK的文件夹名称不要带空格
+
+
+
+
+
+
+
 ## Widget
 
 在Flutter中，有两种常见的Widget：StatefulWidget（有状态的组件）和StatelessWidget（无状态的组件）。它们之间的主要区别是：

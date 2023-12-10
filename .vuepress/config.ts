@@ -127,6 +127,15 @@ export default defineUserConfig({
           }
         ],
       },
+      {
+        text: '临时',
+        children: [
+          {
+            text: 'flutter',
+            link: '/docs/temp/flutter.md'
+          }
+        ],
+      },
     ],
     sidebar:'auto'
   })
